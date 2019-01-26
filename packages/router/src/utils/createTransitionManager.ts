@@ -31,7 +31,7 @@ const createTransitionManager = () => {
 
       if (typeof result === 'string') {
         if (typeof getUserConfirmation === 'function') {
-          getUserConfirmation(result, callback);
+          getUserConfirmation(result, location, callback);
         } else {
           warning(
             false,

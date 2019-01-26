@@ -1,15 +1,15 @@
 import { Component, Prop, State, ComponentInterface } from '@stencil/core';
-import createHistory from '../../utils/createBrowserHistory';
 import createHashHistory from '../../utils/createHashHistory';
 import { LocationSegments, HistoryType, RouterHistory, RouteViewOptions } from '../../global/interfaces';
 import ActiveRouter, { ActiveRouterState } from '../../global/active-router';
 import { QueueApi } from '@stencil/core/dist/declarations';
+import createBrowserHistory from '../../utils/createBrowserHistory';
 
 function getLocation(location: LocationSegments, root: string): LocationSegments {
   // Remove the root URL if found at beginning of string
   const pathname = location.pathname.indexOf(root) == 0 ?
-                    '/' + location.pathname.slice(root.length) :
-                    location.pathname;
+    '/' + location.pathname.slice(root.length) :
+    location.pathname;
 
   return {
     ...location,
@@ -17,10 +17,6 @@ function getLocation(location: LocationSegments, root: string): LocationSegments
   };
 }
 
-const HISTORIES: { [key in HistoryType]: () => RouterHistory } = {
-  'browser': createHistory,
-  'hash': createHashHistory
-};
 
 /**
   * @name Router
@@ -33,7 +29,7 @@ const HISTORIES: { [key in HistoryType]: () => RouterHistory } = {
 export class Router implements ComponentInterface {
   @Prop() root: string = '/';
   @Prop({ context: 'isServer' }) private isServer!: boolean;
-  @Prop({ context: 'queue'}) queue!: QueueApi;
+  @Prop({ context: 'queue' }) queue!: QueueApi;
 
   @Prop() historyType: HistoryType = 'browser';
 
@@ -41,13 +37,19 @@ export class Router implements ComponentInterface {
   // it's updated through RouteTitle
   @Prop() titleSuffix: string = '';
   @Prop() scrollTopOffset?: number;
+  @Prop() private getUserConfirmation: ((message: string, location: LocationSegments, callback: (confirmed: boolean) => {}) => {}) | null = null;
 
   @State() location?: LocationSegments;
   @State() history?: RouterHistory;
 
   componentWillLoad() {
-    this.history = HISTORIES[this.historyType]();
-
+    if (this.historyType === 'browser') {
+      this.history = createBrowserHistory(this.getUserConfirmation ? {
+        getUserConfirmation: this.getUserConfirmation,
+      } : {});
+    } else {
+      this.history = createHashHistory();
+    }
     this.history.listen(async (location: LocationSegments) => {
       location = getLocation(location, this.root);
       this.location = location;

@@ -1,3 +1,5 @@
+import { LocationSegments } from "../global/interfaces";
+
 export const canUseDOM = !!(
   typeof window !== 'undefined' && window.document && window.document.createElement
 );
@@ -14,7 +16,7 @@ export const removeEventListener = (node: HTMLElement | Window, event: any, list
     : (node as any).detachEvent('on' + event, listener)
 );
 
-export const getConfirmation = (message: string, callback: (confirmed: boolean) => {}) => (
+export const getConfirmation = (message: string, _location: LocationSegments, callback: (confirmed: boolean) => {}) => (
   callback(window.confirm(message))
 );
 
