@@ -1,6 +1,6 @@
 {
   "name": "@aqeed/stencil-router",
-  "version": "0.3.1--vali-5",
+  "version": "0.3.1--vali-8",
   "description": "Stencil Router",
   "module": "dist/collection/index.js",
   "main": "dist/index.js",
