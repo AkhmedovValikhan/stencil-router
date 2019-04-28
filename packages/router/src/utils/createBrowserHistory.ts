@@ -23,7 +23,7 @@ import {
 } from './dom-utils';
 
 export interface CreateBrowserHistoryOptions {
-  getUserConfirmation?: (message: string, callback: (confirmed: boolean) => {}) => {};
+  getUserConfirmation?: (message: string, location: LocationSegments, callback: (confirmed: boolean) => {}) => {};
   forceRefresh?: boolean;
   keyLength?: number;
   basename?: string;
@@ -167,7 +167,7 @@ const createBrowserHistory = (props: CreateBrowserHistoryOptions = {}): RouterHi
   };
 
   const initialLocation = getDOMLocation(getHistoryState());
-  let allKeys = [ initialLocation.key ];
+  let allKeys = [initialLocation.key];
 
   // Public interface
 
@@ -194,7 +194,7 @@ const createBrowserHistory = (props: CreateBrowserHistoryOptions = {}): RouterHi
       const { key, state } = location;
 
       if (canUseHistory) {
-        globalHistory.pushState({ key, state }, undefined, href);
+        globalHistory.pushState({ key, state }, '', href);
 
         if (forceRefresh) {
           window.location.href = href;
@@ -237,7 +237,7 @@ const createBrowserHistory = (props: CreateBrowserHistoryOptions = {}): RouterHi
       const { key, state } = location;
 
       if (canUseHistory) {
-        globalHistory.replaceState({ key, state }, undefined, href);
+        globalHistory.replaceState({ key, state }, '', href);
 
         if (forceRefresh) {
           window.location.replace(href);

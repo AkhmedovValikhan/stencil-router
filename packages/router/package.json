@@ -1,8 +1,8 @@
 {
-  "name": "@stencil/router",
-  "version": "0.3.2",
+  "name": "@aqeed/stencil-router",
+  "version": "0.3.1--vali-8",
   "description": "Stencil Router",
-  "module": "dist/esm/index.js",
+  "module": "dist/collection/index.js",
   "main": "dist/index.js",
   "unpkg": "dist/stencilrouter.js",
   "types": "dist/types/index.d.ts",

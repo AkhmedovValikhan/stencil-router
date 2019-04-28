@@ -61,6 +61,9 @@ export function matchPath(pathname: string, options: MatchOptions = {}): null | 
     url: path === '/' && url === '' ? '/' : url, // the matched portion of the URL
     isExact, // whether or not we matched exactly
     params: keys.reduce((memo, key: Key, index) => {
+      if (memo[key.name] && !values[index]) {
+        return memo;
+      }
       memo[key.name] = values[index];
       return memo;
     }, {} as {[key: string]: string})
