@@ -9,13 +9,17 @@ import '@stencil/core';
 
 import '@stencil/state-tunnel';
 import {
-  HistoryType,
-  LocationSegments,
   MatchResults,
-  Path,
-  Prompt,
   RouteRenderProps,
   RouterHistory,
+} from '.';
+import {
+  HistoryType,
+  LocationSegments,
+  MatchResults as MatchResults2,
+  Prompt,
+  RouteRenderProps as RouteRenderProps2,
+  RouterHistory as RouterHistory2,
   RouteViewOptions,
 } from './global/interfaces';
 
@@ -27,6 +31,21 @@ export namespace Components {
   }
   interface StencilAsyncContentAttributes extends StencilHTMLAttributes {
     'documentLocation'?: string;
+  }
+
+  interface StencilRouterOutlet {
+    'component'?: string;
+    'componentProps'?: { [key: string]: any };
+    'history'?: RouterHistory;
+    'match': MatchResults | null;
+    'routeRender'?: (props: RouteRenderProps) => any;
+  }
+  interface StencilRouterOutletAttributes extends StencilHTMLAttributes {
+    'component'?: string;
+    'componentProps'?: { [key: string]: any };
+    'history'?: RouterHistory;
+    'match'?: MatchResults | null;
+    'routeRender'?: (props: RouteRenderProps) => any;
   }
 
   interface StencilRouterPrompt {
@@ -72,7 +91,7 @@ export namespace Components {
     'root'?: string;
     'strict': boolean;
     'url'?: string;
-    'urlMatch'?: Path;
+    'urlMatch'?: string | string[];
   }
   interface StencilRouteLinkAttributes extends StencilHTMLAttributes {
     'activeClass'?: string;
@@ -95,7 +114,7 @@ export namespace Components {
     'root'?: string;
     'strict'?: boolean;
     'url'?: string;
-    'urlMatch'?: Path;
+    'urlMatch'?: string | string[];
   }
 
   interface StencilRouteTitle {
@@ -170,6 +189,7 @@ export namespace Components {
 declare global {
   interface StencilElementInterfaces {
     'StencilAsyncContent': Components.StencilAsyncContent;
+    'StencilRouterOutlet': Components.StencilRouterOutlet;
     'StencilRouterPrompt': Components.StencilRouterPrompt;
     'StencilRouterRedirect': Components.StencilRouterRedirect;
     'StencilRouteLink': Components.StencilRouteLink;
@@ -181,6 +201,7 @@ declare global {
 
   interface StencilIntrinsicElements {
     'stencil-async-content': Components.StencilAsyncContentAttributes;
+    'stencil-router-outlet': Components.StencilRouterOutletAttributes;
     'stencil-router-prompt': Components.StencilRouterPromptAttributes;
     'stencil-router-redirect': Components.StencilRouterRedirectAttributes;
     'stencil-route-link': Components.StencilRouteLinkAttributes;
@@ -195,6 +216,12 @@ declare global {
   var HTMLStencilAsyncContentElement: {
     prototype: HTMLStencilAsyncContentElement;
     new (): HTMLStencilAsyncContentElement;
+  };
+
+  interface HTMLStencilRouterOutletElement extends Components.StencilRouterOutlet, HTMLStencilElement {}
+  var HTMLStencilRouterOutletElement: {
+    prototype: HTMLStencilRouterOutletElement;
+    new (): HTMLStencilRouterOutletElement;
   };
 
   interface HTMLStencilRouterPromptElement extends Components.StencilRouterPrompt, HTMLStencilElement {}
@@ -241,6 +268,7 @@ declare global {
 
   interface HTMLElementTagNameMap {
     'stencil-async-content': HTMLStencilAsyncContentElement
+    'stencil-router-outlet': HTMLStencilRouterOutletElement
     'stencil-router-prompt': HTMLStencilRouterPromptElement
     'stencil-router-redirect': HTMLStencilRouterRedirectElement
     'stencil-route-link': HTMLStencilRouteLinkElement
@@ -252,6 +280,7 @@ declare global {
 
   interface ElementTagNameMap {
     'stencil-async-content': HTMLStencilAsyncContentElement;
+    'stencil-router-outlet': HTMLStencilRouterOutletElement;
     'stencil-router-prompt': HTMLStencilRouterPromptElement;
     'stencil-router-redirect': HTMLStencilRouterRedirectElement;
     'stencil-route-link': HTMLStencilRouteLinkElement;

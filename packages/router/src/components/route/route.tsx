@@ -66,13 +66,21 @@ export class Route implements ComponentInterface {
         scrollTopOffset: this.scrollTopOffset
       }
     }
+    if (this.match) {
+      const outlet = document.getElementsByTagName('stencil-router-outlet')[0];
+      outlet.history = this.history;
+      outlet.match = this.match;
+      outlet.component = this.component;
+      outlet.componentProps = this.componentProps;
+      outlet.routeRender = this.routeRender;
+    }
     // After all children have completed then tell switch
     // the provided callback will get executed after this route is in view
     if (typeof this.componentUpdated === 'function') {
       this.componentUpdated(routeViewOptions);
 
-    // If this is an independent route and it matches then routes have updated.
-    // If the only change to location is a hash change then do not scroll.
+      // If this is an independent route and it matches then routes have updated.
+      // If the only change to location is a hash change then do not scroll.
     } else if (this.match && !matchesAreEqual(this.match, this.previousMatch) && this.routeViewsUpdated) {
       this.routeViewsUpdated(routeViewOptions);
     }
@@ -86,37 +94,7 @@ export class Route implements ComponentInterface {
   }
 
   render() {
-    // If there is no activeRouter then do not render
-    // Check if this route is in the matching URL (for example, a parent route)
-    if (!this.match || !this.history) {
-      return null;
-    }
-
-    // component props defined in route
-    // the history api
-    // current match data including params
-    const childProps: RouteRenderProps = {
-      ...this.componentProps,
-      history: this.history,
-      match: this.match
-    };
-
-    // If there is a routerRender defined then use
-    // that and pass the component and component props with it.
-    if (this.routeRender) {
-      return this.routeRender({
-        ...childProps,
-        component: this.component
-      });
-    }
-
-    if (this.component) {
-      const ChildComponent = this.component;
-
-      return (
-        <ChildComponent {...childProps} />
-      );
-    }
+    return null;
   }
 }
 

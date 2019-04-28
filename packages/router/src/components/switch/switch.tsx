@@ -35,9 +35,9 @@ function isHTMLStencilRouteElement(element: Element): element is HTMLStencilRout
 export class RouteSwitch implements ComponentInterface {
   @Element() el!: HTMLStencilElement;
 
-  @Prop({ context: 'queue'}) queue!: QueueApi;
+  @Prop({ context: 'queue' }) queue!: QueueApi;
 
-  @Prop({reflectToAttr: true}) group: string = getUniqueId();
+  @Prop({ reflectToAttr: true }) group: string = getUniqueId();
   @Prop() scrollTopOffset?: number;
   @Prop() location?: LocationSegments;
   @Prop() routeViewsUpdated?: (options: RouteViewOptions) => void;
@@ -93,37 +93,57 @@ export class RouteSwitch implements ComponentInterface {
     }
     activeChild.el.group = this.group;
     activeChild.el.match = activeChild.match;
-    activeChild.el.componentUpdated = (routeViewUpdatedOptions: RouteViewOptions) => {
-      // After the new active route has completed then update visibility of routes
-      this.queue.write(() => {
-        this.subscribers.forEach((child, index) => {
-          child.el.componentUpdated = undefined;
 
-          if (index === this.activeIndex) {
-            return child.el.style.display = '';
-          }
+    this.queue.write(() => {
+      this.subscribers.forEach((child, index) => {
+        child.el.componentUpdated = undefined;
 
-          if (this.scrollTopOffset) {
-            child.el.scrollTopOffset = this.scrollTopOffset;
-          }
-          child.el.group = this.group;
-          child.el.match = null;
-          child.el.style.display = 'none';
-        });
+        if (index === this.activeIndex) {
+          return child.el.style.display = '';
+        }
+
+        if (this.scrollTopOffset) {
+          child.el.scrollTopOffset = this.scrollTopOffset;
+        }
+        child.el.group = this.group;
+        child.el.match = null;
+        child.el.style.display = 'none';
       });
+    });
 
-      if (this.routeViewsUpdated) {
-        this.routeViewsUpdated({
-          scrollTopOffset: this.scrollTopOffset,
-          ...routeViewUpdatedOptions
-        });
-      }
-    };
+    // activeChild.el.componentUpdated = (routeViewUpdatedOptions: RouteViewOptions) => {
+    //   // After the new active route has completed then update visibility of routes
+    //   this.queue.write(() => {
+    //     this.subscribers.forEach((child, index) => {
+    //       child.el.componentUpdated = undefined;
+
+    //       if (index === this.activeIndex) {
+    //         // Custom
+    //         //
+    //         // return child.el.style.display = '';
+    //       }
+
+    //       if (this.scrollTopOffset) {
+    //         child.el.scrollTopOffset = this.scrollTopOffset;
+    //       }
+    //       child.el.group = this.group;
+    //       child.el.match = null;
+    //       child.el.style.display = 'none';
+    //     });
+    //   });
+
+    //   if (this.routeViewsUpdated) {
+    //     this.routeViewsUpdated({
+    //       scrollTopOffset: this.scrollTopOffset,
+    //       ...routeViewUpdatedOptions
+    //     });
+    //   }
+    // };
   }
 
   render() {
     return (
-      <slot/>
+      <slot />
     );
   }
 }
